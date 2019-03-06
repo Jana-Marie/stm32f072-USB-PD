@@ -1,7 +1,9 @@
 #include "main.h"
 #include "usb_device.h"
 #include "tcpm_driver.h"
+#include "tcpm.h"
 #include "usb_pd.h"
+#include "FUSB302.h"
 
 ADC_HandleTypeDef hadc;
 DMA_HandleTypeDef hdma_adc;
@@ -35,36 +37,78 @@ int main(void)
   MX_ADC_Init();
   MX_I2C1_Init();
   MX_I2C2_Init();
-  MX_USB_DEVICE_Init();
+  //
 
-  HAL_GPIO_ReadPin(GPIOA, BUTTON_Pin) == 1) {
+  if (HAL_GPIO_ReadPin(GPIOA, BUTTON_Pin) == 1) {
     dfu_otter_bootloader();
   }
 
 
-  tcpm_init(0);
-  pd_init(0);
-
+  //tcpm_init(0);
+  //pd_init(0);
+  my_init(0);
   HAL_GPIO_WritePin(GPIOA, LED_POWER_Pin, 1);
-  char str[40];
-
+  //char str[40];
+  //MX_USB_DEVICE_Init();
   while (1)
   {
-    HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, HAL_GPIO_ReadPin(GPIOA, BUTTON_Pin));
-    uint32_t otter1 = 0;
-    uint16_t otter2 = pd_find_pdo_index(0,9000,&otter1);
+    HAL_Delay(4);
+    HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, HAL_GPIO_ReadPin(GPIOA, INT_N_Pin)^HAL_GPIO_ReadPin(GPIOA, BUTTON_Pin));
 
-    memset(str, ' ', 40);
-    sprintf(&str[0], "Otter! %ld  %d\n\r", otter1 ,otter2);
+    //uint32_t otter1 = 0;
+    //uint16_t otter2 = pd_find_pdo_index(0, 9000, &otter1);
 
-    CDC_Transmit_FS((unsigned char*)str, sizeof(str));
+    //memset(str, ' ', 40);
+    //sprintf(&str[0], "Otter! %ld  %d\n\r", otter1 , otter2);
 
-    HAL_GPIO_ReadPin(GPIOA, INT_N_Pin) == 0) {
-      tcpc_alert(0);
+    //CDC_Transmit_FS((unsigned char*)str, sizeof(str));
+
+    if (HAL_GPIO_ReadPin(GPIOA, INT_N_Pin) == 0) {
+      //tcpc_alert(0);
     }
 
     pd_run_state_machine(0);
   }
+}
+
+void my_init() {
+  uint8_t cfg = 0;
+  tcpc_write(cfg, TCPC_REG_RESET, TCPC_REG_RESET_SW_RESET);
+
+  tcpc_write(cfg, TCPC_REG_POWER, 0x0F);
+
+  tcpc_write(cfg, TCPC_REG_MASK, 0x00);
+  tcpc_write(cfg, TCPC_REG_MASKA, 0x00);
+  tcpc_write(cfg, TCPC_REG_MASKB, 0x00);
+  tcpc_write(cfg, TCPC_REG_CONTROL0, 0x04);
+
+  tcpc_write(cfg, TCPC_REG_CONTROL3, 0x07);
+
+  tcpc_write(cfg, TCPC_REG_CONTROL1, TCPC_REG_CONTROL1_RX_FLUSH);
+
+  tcpc_write(cfg, TCPC_REG_SWITCHES0, 0x07);
+  
+  HAL_Delay(1);
+  int cc1 = 0;
+  tcpc_read(cfg, TCPC_REG_STATUS0, &cc1);
+  cc1 = cc1 & TCPC_REG_STATUS0_BC;
+
+  tcpc_write(cfg, TCPC_REG_SWITCHES0, 0x0B);
+
+  HAL_Delay(1);
+  int cc2 = 0;
+  tcpc_read(cfg, TCPC_REG_STATUS0, &cc2);
+  cc2 = cc2 & TCPC_REG_STATUS0_BC;
+
+  if (cc1 > cc2) {
+    tcpc_write(cfg, TCPC_REG_SWITCHES1, 0x25);
+    tcpc_write(cfg, TCPC_REG_SWITCHES0, 0x07);
+  } else {
+    tcpc_write(cfg, TCPC_REG_SWITCHES1, 0x26);
+    tcpc_write(cfg, TCPC_REG_SWITCHES0, 0x0B);
+  }
+
+  tcpc_write(cfg, TCPC_REG_RESET, TCPC_REG_RESET_PD_RESET);
 }
 
 void dfu_otter_bootloader(void)
@@ -175,7 +219,7 @@ static void MX_I2C1_Init(void)
 static void MX_I2C2_Init(void)
 {
   hi2c2.Instance = I2C2;
-  hi2c2.Init.Timing = 0x20003D5E; //0x20000209
+  hi2c2.Init.Timing = 0x20000209; //0x20000209
   hi2c2.Init.OwnAddress1 = 0;
   hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;

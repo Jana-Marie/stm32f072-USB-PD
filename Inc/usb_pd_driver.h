@@ -18,8 +18,8 @@ extern "C" {
 #include <stdint.h>
 
 //#define CONFIG_BBRAM
-#define CONFIG_CHARGE_MANAGER
-#define PD_PREFER_HIGH_VOLTAGE
+//#define CONFIG_CHARGE_MANAGER
+//#define PD_PREFER_HIGH_VOLTAGE
 //#define CONFIG_USBC_BACKWARDS_COMPATIBLE_DFP
 //#define CONFIG_USBC_VCONN_SWAP
 //#define CONFIG_USB_PD_ALT_MODE
@@ -33,12 +33,12 @@ extern "C" {
 #define CONFIG_USB_PD_PULLUP TYPEC_RP_USB
 
 /* Override PD_ROLE_DEFAULT in usb_pd.h */
-#define PD_ROLE_DEFAULT(port) (PD_ROLE_SINK)
+#define PD_ROLE_DEFAULT(port) PD_ROLE_SINK
 
 /* Don't automatically change roles */
-#undef CONFIG_USB_PD_INITIAL_DRP_STATE
-#define CONFIG_USB_PD_INITIAL_DRP_STATE PD_DRP_FREEZE
-
+//#undef CONFIG_USB_PD_INITIAL_DRP_STATE
+//#define CONFIG_USB_PD_INITIAL_DRP_STATE PD_DRP_FREEZE
+#define CONFIG_USB_PD_INITIAL_DRP_STATE PD_DRP_FORCE_SINK
 /* board specific type-C power constants */
 /*
  * delay to turn on the power supply max is ~16ms.
@@ -50,9 +50,9 @@ extern "C" {
 /* Define typical operating power and max power */
 // Most Arduinos seem to be ok with 12 V, but have problems starting around 15 V. 
 #define PD_OPERATING_POWER_MW (2250ull)
-#define PD_MAX_POWER_MW       (60000ull)
-#define PD_MAX_CURRENT_MA     (5000ull)
-#define PD_MAX_VOLTAGE_MV     (12000ull)
+#define PD_MAX_POWER_MW       (18000ull)
+#define PD_MAX_CURRENT_MA     (2000ull)
+#define PD_MAX_VOLTAGE_MV     (9000ull)
 
 #define PDO_FIXED_FLAGS (PDO_FIXED_DUAL_ROLE | PDO_FIXED_DATA_SWAP |\
 PDO_FIXED_COMM_CAP)

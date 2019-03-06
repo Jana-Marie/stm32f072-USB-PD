@@ -17,8 +17,8 @@ extern "C" {
 #include "usb_pd.h"
 
 /* Chip Device ID - 302A or 302B */
-#define fusb302_DEVID_302A 0x08
-#define fusb302_DEVID_302B 0x09
+//#define fusb302_DEVID_302A 0x08
+//#define fusb302_DEVID_302B 0x09
 
 /* I2C slave address varies by part number */
 /* FUSB302BUCX / FUSB302BMPX */
@@ -157,7 +157,7 @@ extern "C" {
 
 #define TCPC_REG_INTERRUPTA 0x3E
 #define TCPC_REG_INTERRUPTA_OCP_TEMP    (1<<7)
-#define TCPC_REG_INTERRUPTA_TOGDONE (1<<6)
+#define TCPC_REG_INTERRUPTA_TOGDONE     (1<<6)
 #define TCPC_REG_INTERRUPTA_SOFTFAIL    (1<<5)
 #define TCPC_REG_INTERRUPTA_RETRYFAIL   (1<<4)
 #define TCPC_REG_INTERRUPTA_HARDSENT    (1<<3)
@@ -177,6 +177,7 @@ extern "C" {
 #define TCPC_REG_STATUS0_WAKE       (1<<2)
 #define TCPC_REG_STATUS0_BC_LVL1    (1<<1) /* two-bit field */
 #define TCPC_REG_STATUS0_BC_LVL0    (1<<0) /* two-bit field */
+#define TCPC_REG_STATUS0_BC         (0x03)
 
 #define TCPC_REG_STATUS1    0x41
 #define TCPC_REG_STATUS1_RXSOP2     (1<<7)
