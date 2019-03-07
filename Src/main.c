@@ -22,6 +22,7 @@ static void MX_DMA_Init(void);
 static void MX_ADC_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_I2C2_Init(void);
+void my_init(void);
 
 const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT] = {
   {0, fusb302_I2C_SLAVE_ADDR, &fusb302_tcpm_drv}
@@ -37,35 +38,40 @@ int main(void)
   MX_ADC_Init();
   MX_I2C1_Init();
   MX_I2C2_Init();
-  //
 
   if (HAL_GPIO_ReadPin(GPIOA, BUTTON_Pin) == 1) {
     dfu_otter_bootloader();
   }
 
 
-  //tcpm_init(0);
-  //pd_init(0);
-  my_init(0);
+  pd_init(0);
+  my_init();
 
   HAL_GPIO_WritePin(GPIOA, LED_POWER_Pin, 1);
-  //char str[40];
+  char str[40];
+
+
+  delayUs(100);
+  pd_request_source_voltage(0, 9000);
+
+
   //MX_USB_DEVICE_Init();
+
   while (1)
   {
-    HAL_Delay(4);
+    HAL_Delay(10);
     HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, HAL_GPIO_ReadPin(GPIOA, INT_N_Pin)^HAL_GPIO_ReadPin(GPIOA, BUTTON_Pin));
+    /*
+    uint32_t otter1 = 0;
+    uint16_t otter2 = 1;//pd_find_pdo_index(0, 9000, &otter1);
 
-    //uint32_t otter1 = 0;
-    //uint16_t otter2 = pd_find_pdo_index(0, 9000, &otter1);
+    memset(str, ' ', 40);
+    sprintf(&str[0], "Otter! %ld  %d\n\r", otter1 , otter2);
 
-    //memset(str, ' ', 40);
-    //sprintf(&str[0], "Otter! %ld  %d\n\r", otter1 , otter2);
-
-    //CDC_Transmit_FS((unsigned char*)str, sizeof(str));
-
+    CDC_Transmit_FS((unsigned char*)str, sizeof(str));
+    */
     if (HAL_GPIO_ReadPin(GPIOA, INT_N_Pin) == 0) {
-      //tcpc_alert(0);
+      tcpc_alert(0);
     }
 
     pd_run_state_machine(0);
@@ -88,15 +94,15 @@ void my_init() {
   tcpc_write(cfg, TCPC_REG_CONTROL1, TCPC_REG_CONTROL1_RX_FLUSH);
 
   tcpc_write(cfg, TCPC_REG_SWITCHES0, 0x07);
-  
-  HAL_Delay(1);
+
+  delayUs(250);
   int cc1 = 0;
   tcpc_read(cfg, TCPC_REG_STATUS0, &cc1);
   cc1 = cc1 & TCPC_REG_STATUS0_BC;
 
   tcpc_write(cfg, TCPC_REG_SWITCHES0, 0x0B);
 
-  HAL_Delay(1);
+  delayUs(250);
   int cc2 = 0;
   tcpc_read(cfg, TCPC_REG_STATUS0, &cc2);
   cc2 = cc2 & TCPC_REG_STATUS0_BC;

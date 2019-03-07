@@ -105,6 +105,8 @@
 /*---------- -----------*/
 #define MAX_STATIC_ALLOC_SIZE     512
 
+#define USBD_CDC_INTERVAL                      2000  
+
 /****************************************/
 /* #define for FS and HS identification */
 #define DEVICE_FS 		0
