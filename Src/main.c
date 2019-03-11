@@ -43,16 +43,16 @@ int main(void)
     dfu_otter_bootloader();
   }
 
-
+  tcpm_init(0);
   pd_init(0);
-  my_init();
+  //my_init();
 
   HAL_GPIO_WritePin(GPIOA, LED_POWER_Pin, 1);
   char str[40];
 
 
   delayUs(100);
-  pd_request_source_voltage(0, 9000);
+  //pd_request_source_voltage(0, 9000);
 
 
   //MX_USB_DEVICE_Init();

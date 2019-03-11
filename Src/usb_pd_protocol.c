@@ -3217,7 +3217,7 @@ void pd_run_state_machine(int port)
 #endif // CONFIG_USBC_VCONN_SWAP //
 #endif // CONFIG_USB_PD_DUAL_ROLE //
 	case PD_STATE_SOFT_RESET:
-		/*
+		
 		if (pd[port].last_state != pd[port].task_state) {
 			// Message ID of soft reset is always 0 //
 			pd[port].msg_id = 0;
@@ -3236,10 +3236,10 @@ void pd_run_state_machine(int port)
 			    get_time().val + PD_T_SENDER_RESPONSE,
 			    PD_STATE_HARD_RESET_SEND);
 		}
-		*/
+		
 		break;
 	case PD_STATE_HARD_RESET_SEND:
-		/*
+		
 		hard_reset_count++;
 		if (pd[port].last_state != pd[port].task_state)
 			hard_reset_sent = 0;
@@ -3286,7 +3286,7 @@ void pd_run_state_machine(int port)
 				timeout = 10 * MSEC_US;
 			}
 		}
-		*/
+		
 		break;
 	case PD_STATE_HARD_RESET_EXECUTE:
 
