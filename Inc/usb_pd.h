@@ -16,10 +16,10 @@ extern "C" {
 #endif
 
 /* Time units in microseconds */
-#define MSEC_US         (1000ul)
-#define SECOND_US    (1000000ul)
-#define MINUTE_US   (60000000ul)
-#define HOUR_US  (3600000000ull)  /* Too big to fit in a signed int */
+#define MSEC_US         (1ul)
+#define SECOND_US    (1000ul)
+#define MINUTE_US   (60000ul)
+#define HOUR_US  (36000000ull)  /* Too big to fit in a signed int */
 
 /* PD Host command timeout */
 #define PD_HOST_COMMAND_TIMEOUT_US SECOND_US

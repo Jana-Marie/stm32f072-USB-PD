@@ -64,8 +64,8 @@ int pd_snk_is_vbus_provided(int port)
 timestamp_t get_time(void)
 {
 	timestamp_t t;
-  t.val  = millis()*1000;
-  return t;
+	t.val  = millis()*1000;
+	return t;
 }
 
 void pd_power_supply_reset(int port)

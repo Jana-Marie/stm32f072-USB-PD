@@ -4,7 +4,10 @@
 #include "tcpm.h"
 #include "usb_pd.h"
 #include "FUSB302.h"
-
+#include "usb_pd.h"
+#include "usb_pd_tcpm.h"
+#include "tcpm.h"
+#include "usb_pd_driver.h"
 ADC_HandleTypeDef hadc;
 DMA_HandleTypeDef hdma_adc;
 
@@ -44,23 +47,29 @@ int main(void)
   }
 
   tcpm_init(0);
+  delayUs(10);
   pd_init(0);
+  delayUs(10);
   //my_init();
 
   HAL_GPIO_WritePin(GPIOA, LED_POWER_Pin, 1);
+  HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, 0);
   char str[40];
 
 
-  delayUs(100);
   //pd_request_source_voltage(0, 9000);
 
 
   //MX_USB_DEVICE_Init();
-
+//pd_request_power_swap(0);
+  //pd_update_dual_role_config(0);
   while (1)
   {
-    HAL_Delay(10);
-    HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, HAL_GPIO_ReadPin(GPIOA, INT_N_Pin)^HAL_GPIO_ReadPin(GPIOA, BUTTON_Pin));
+    //pd_set_new_power_request(0);
+    if(pd[0].task_state == PD_STATE_HARD_RESET_SEND){
+      HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, 1);
+    }
+    //HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, HAL_GPIO_ReadPin(GPIOA, INT_N_Pin)^HAL_GPIO_ReadPin(GPIOA, BUTTON_Pin));
     /*
     uint32_t otter1 = 0;
     uint16_t otter2 = 1;//pd_find_pdo_index(0, 9000, &otter1);
@@ -70,12 +79,19 @@ int main(void)
 
     CDC_Transmit_FS((unsigned char*)str, sizeof(str));
     */
+    //printf("Otter\n");
     if (HAL_GPIO_ReadPin(GPIOA, INT_N_Pin) == 0) {
       tcpc_alert(0);
     }
-
     pd_run_state_machine(0);
+
+    HAL_Delay(4);
   }
+}
+
+void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps)
+{
+  HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, 1);
 }
 
 void my_init() {
