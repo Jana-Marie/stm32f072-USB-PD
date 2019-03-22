@@ -16,10 +16,10 @@ extern "C" {
 #endif
 
 /* Time units in microseconds */
-#define MSEC_US         (1ul)
-#define SECOND_US    (1000ul)
-#define MINUTE_US   (60000ul)
-#define HOUR_US  (36000000ull)  /* Too big to fit in a signed int */
+#define MSEC_US         (1000ul)
+#define SECOND_US    (1000000ul)
+#define MINUTE_US   (60000000ul)
+#define HOUR_US  (3600000000ull)  /* Too big to fit in a signed int */
 
 /* PD Host command timeout */
 #define PD_HOST_COMMAND_TIMEOUT_US SECOND_US
@@ -152,7 +152,7 @@ enum pd_rx_errors {
 #define PD_T_CHUNK_SENDER_RSP (24*MSEC_US) /* between 24ms and 30ms */
 #define PD_T_CHUNK_SENDER_REQ (24*MSEC_US) /* between 24ms and 30ms */
 #define PD_T_SEND_SOURCE_CAP  (100*MSEC_US) /* between 100ms and 200ms */
-#define PD_T_SINK_WAIT_CAP    (600*MSEC_US) /* between 310ms and 620ms */
+#define PD_T_SINK_WAIT_CAP    (6000*MSEC_US) /* between 310ms and 620ms */
 #define PD_T_SINK_TRANSITION   (35*MSEC_US) /* between 20ms and 35ms */
 #define PD_T_SOURCE_ACTIVITY   (45*MSEC_US) /* between 40ms and 50ms */
 //#define PD_T_SENDER_RESPONSE   (30*MSEC_US) /* between 24ms and 30ms */

@@ -18,7 +18,7 @@ extern "C" {
 #include <stdint.h>
 
 //#define CONFIG_BBRAM
-//#define CONFIG_CHARGE_MANAGER
+#define CONFIG_CHARGE_MANAGER
 //#define CONFIG_USBC_BACKWARDS_COMPATIBLE_DFP
 //#define CONFIG_USBC_VCONN_SWAP
 //#define CONFIG_USB_PD_ALT_MODE
@@ -37,7 +37,7 @@ extern "C" {
 
 /* Don't automatically change roles */
 #undef CONFIG_USB_PD_INITIAL_DRP_STATE
-#define CONFIG_USB_PD_INITIAL_DRP_STATE PD_DRP_FORCE_SINK
+#define CONFIG_USB_PD_INITIAL_DRP_STATE PD_DRP_FREEZE
 
 /* board specific type-C power constants */
 /*

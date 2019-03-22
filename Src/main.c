@@ -26,11 +26,12 @@ static void MX_ADC_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_I2C2_Init(void);
 void my_init(void);
+static uint32_t pd_src_caps[CONFIG_USB_PD_PORT_COUNT][PDO_MAX_OBJECTS];
 
 const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT] = {
   {0, fusb302_I2C_SLAVE_ADDR, &fusb302_tcpm_drv}
 };
-
+uint32_t otterPDO[5]; 
 int main(void)
 {
   HAL_Init();
@@ -54,8 +55,8 @@ int main(void)
 
   HAL_GPIO_WritePin(GPIOA, LED_POWER_Pin, 1);
   HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, 0);
-  char str[40];
 
+  delayUs(50000);
 
   //pd_request_source_voltage(0, 9000);
 
@@ -63,12 +64,13 @@ int main(void)
   //MX_USB_DEVICE_Init();
 //pd_request_power_swap(0);
   //pd_update_dual_role_config(0);
+  //dual_role_on();
   while (1)
   {
     //pd_set_new_power_request(0);
-    if(pd[0].task_state == PD_STATE_HARD_RESET_SEND){
-      HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, 1);
-    }
+    //if(pd[0].task_state == PD_STATE_HARD_RESET_SEND){
+    //  HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, 1);
+    //}
     //HAL_GPIO_WritePin(GPIOA, LED_STATUS_Pin, HAL_GPIO_ReadPin(GPIOA, INT_N_Pin)^HAL_GPIO_ReadPin(GPIOA, BUTTON_Pin));
     /*
     uint32_t otter1 = 0;
@@ -82,8 +84,12 @@ int main(void)
     //printf("Otter\n");
     if (HAL_GPIO_ReadPin(GPIOA, INT_N_Pin) == 0) {
       tcpc_alert(0);
+
     }
     pd_run_state_machine(0);
+    pd_find_pdo_index(0, 9000, otterPDO);
+
+    pd_process_source_cap(0, 2, pd_src_caps);
 
     HAL_Delay(4);
   }
