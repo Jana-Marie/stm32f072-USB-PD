@@ -48,7 +48,7 @@ int main(void)
   my_init();
 
   HAL_GPIO_WritePin(GPIOA, LED_POWER_Pin, 1);
-  char str[40];
+  //char str[40];
 
 
   delayUs(100);
