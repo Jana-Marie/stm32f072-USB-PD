@@ -2,7 +2,7 @@
   FUSB302.h - Library for interacting with the FUSB302B chip.
   Copyright 2010 The Chromium OS Authors
   Copyright 2017 Jason Cerundolo
-  Released under an MIT license. See LICENSE file. 
+  Released under an MIT license. See LICENSE file.
 */
 
 #ifndef fusb302_H
@@ -15,6 +15,7 @@ extern "C" {
 #include <stdint.h>
 #include "usb_pd_tcpm.h"
 #include "usb_pd.h"
+#include <string.h>
 
 /* Chip Device ID - 302A or 302B */
 //#define fusb302_DEVID_302A 0x08
@@ -201,16 +202,16 @@ extern "C" {
 
 /* Tokens defined for the FUSB302 TX FIFO */
 enum fusb302_txfifo_tokens {
-    fusb302_TKN_TXON = 0xA1,
-    fusb302_TKN_SYNC1 = 0x12,
-    fusb302_TKN_SYNC2 = 0x13,
-    fusb302_TKN_SYNC3 = 0x1B,
-    fusb302_TKN_RST1 = 0x15,
-    fusb302_TKN_RST2 = 0x16,
-    fusb302_TKN_PACKSYM = 0x80,
-    fusb302_TKN_JAMCRC = 0xFF,
-    fusb302_TKN_EOP = 0x14,
-    fusb302_TKN_TXOFF = 0xFE,
+  fusb302_TKN_TXON = 0xA1,
+  fusb302_TKN_SYNC1 = 0x12,
+  fusb302_TKN_SYNC2 = 0x13,
+  fusb302_TKN_SYNC3 = 0x1B,
+  fusb302_TKN_RST1 = 0x15,
+  fusb302_TKN_RST2 = 0x16,
+  fusb302_TKN_PACKSYM = 0x80,
+  fusb302_TKN_JAMCRC = 0xFF,
+  fusb302_TKN_EOP = 0x14,
+  fusb302_TKN_TXOFF = 0xFE,
 };
 
 extern const struct tcpm_drv fusb302_tcpm_drv;
@@ -246,8 +247,8 @@ int     fusb302_get_chip_id(int *id);
 uint32_t fusb302_get_interrupt_reason(void);
 int     fusb302_tcpc_write(int reg, int val);
 int     fusb302_tcpc_read(int reg, int *val);
-int     fusb302_tcpc_xfer(const uint8_t *out, 
-            int out_size, uint8_t *in, 
+int     fusb302_tcpc_xfer(const uint8_t *out,
+            int out_size, uint8_t *in,
             int in_size, int flags);
 */
 
